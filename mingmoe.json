@@ -1,0 +1,40 @@
+{
+    "cutoff_len": 4096,
+    "save_step": 200,
+    "train_lora_candidate_num": 2,
+    "train_lora_simultaneously_num": 2,
+    "train_strategy": "optim",
+    "lora": [
+      {
+        "name": "mingmoe",
+        "task_name": "arc-c",
+        "optim": "adamw",
+        "scheduler_type": "constant",
+        "warmup_steps": 0,
+        "lr": 0.0002,
+        "batch_size": 16,
+        "micro_batch_size": 8,
+        "test_batch_size": 60,
+        "num_epochs": 5,
+        "r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.05,
+        "target_modules": {
+          "q_proj": false,
+          "k_proj": false,
+          "v_proj": false,
+          "o_proj": false,
+          "w1_proj": true,
+          "w2_proj": true,
+          "w3_proj": true
+        },
+        "routing_strategy": "mixtral",
+        "balance_strategy": "mixtral",
+        "num_experts": [8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8],
+        "top_k": 2,
+        "router_loss": false,
+        "group_by_length": false,
+        "expand_side": "right"
+      }
+    ]
+  }
