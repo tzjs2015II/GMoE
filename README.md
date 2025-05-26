@@ -1,8 +1,8 @@
-# GraphLoRA Implementation
+# GMoE Implementation
 
-Here is the code of **GraphLoRA**. It is based on the open-source repository "[mLoRA-0.3.2](https://github.com/mikecovlee/mLoRA/tree/0.3.2)". In addition to GraphLoRA, we have implemented the following models:
+Here is the code of **GMoE**. It is based on the open-source repository "[mLoRA-0.3.2](https://github.com/mikecovlee/mLoRA/tree/0.3.2)". In addition to GMoE, we have implemented the following models:
 
-- **GraphLoRA**
+- **GMoE**
 - **MixLoRA** (already implemented in the mlora repository)
 - **MoLA**
 - **MING-MoE**
