@@ -16,7 +16,7 @@ This repository contains the code for the paper “GMoE: Empowering LLMs Fine-Tu
 - python=3.11, pytorch>=2.1.2, pyg
 - Other dependencies,, See ```bash requirements.txt```
 
-## Installation Steps
+## Quick Start
 ### STEP 1: Download base models
 
 - [Qwen2 7B](https://huggingface.co/Qwen/Qwen2-7B)
@@ -28,7 +28,7 @@ This repository contains the code for the paper “GMoE: Empowering LLMs Fine-Tu
 
 Configure the configs at folder```bash config```. We have already given the config of **GMoE** and other four baseline models: **LoRAMoE**, **MingMoE**, **MoLA** and **MixLoRA**.
 
-## STEP 3: Start training
+### STEP 3: Start training
 
 Replace the **[base model]** and the **[train/evaluate config]** below with the directory of base model and the configuration in Folder "config".
 
@@ -38,7 +38,7 @@ python GMoE.py --base_model [base model] --config [train config] --seed 42 --log
 
 
 
-## STEP 4: Conduct evaluation
+### STEP 4: Conduct evaluation
 
 After training process, we can conduct the evaluation step with the command below:
 
