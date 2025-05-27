@@ -14,7 +14,7 @@ This repository contains the code for the paper “GMoE: Empowering LLMs Fine-Tu
 
 ## Environment Requirements
 - python=3.11, pytorch>=2.1.2, pyg
-- Other dependencies,, See ```bash requirements.txt```
+- Other dependencies, See ```bash requirements.txt```
 
 ## Quick Start
 ### STEP 1: Download base models
