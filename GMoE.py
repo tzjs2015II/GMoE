@@ -20,7 +20,7 @@ import os
 import sys
 import json
 import torch
-import mlora
+import gmoe
 import logging
 import argparse
 from typing import Dict, Tuple, List, Union
@@ -100,9 +100,9 @@ def query_yes_no(question, default="no"):
                 "Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
 
-def load_base_model() -> Tuple[mlora.Tokenizer, mlora.LLMModel]:
+def load_base_model() -> Tuple[gmoe.Tokenizer, gmoe.LLMModel]:
     logging.info("Initializing pre-trained model.")
-    model = mlora.LLMModel.from_pretrained(
+    model = gmoe.LLMModel.from_pretrained(
         path=args.base_model,
         device=args.device,
         attn_impl=args.attn_impl,
@@ -112,14 +112,14 @@ def load_base_model() -> Tuple[mlora.Tokenizer, mlora.LLMModel]:
             torch.float16 if args.fp16 else torch.float32))
     )
 
-    tokenizer = mlora.Tokenizer(args.base_model)
+    tokenizer = gmoe.Tokenizer(args.base_model)
 
     return tokenizer, model
 
 
 def init_adapter_config(config: Dict[str, any],
-                        llm_model: mlora.LLMModel,
-                        ) -> List[Union[mlora.GenerateConfig, mlora.TrainConfig]]:
+                        llm_model: gmoe.LLMModel,
+                        ) -> List[Union[gmoe.GenerateConfig, gmoe.TrainConfig]]:
     config_list = []
 
     if config["cutoff_len"] == -1:
@@ -129,7 +129,7 @@ def init_adapter_config(config: Dict[str, any],
 
     for lora_config in config["lora"]:
         lora_weight = None
-        config_class = mlora.lora_config_factory(lora_config) # 在common/modelargs.py里
+        config_class = gmoe.lora_config_factory(lora_config) # 在common/modelargs.py里
         config_class.adapter_name = lora_config["name"]
         config_class.task_name = lora_config.get("task_name", "casual")
         config_class.device = args.device
@@ -166,7 +166,7 @@ def init_adapter_config(config: Dict[str, any],
 
         llm_model.init_lora_layer_weight(config_class, lora_weight) #在model.py里
         if args.inference:
-            config_class = mlora.GenerateConfig(
+            config_class = gmoe.GenerateConfig(
                 adapter_name=config_class.adapter_name)
             if not args.disable_prompter:
                 config_class.prompt_template = lora_config.get("prompt", None)
@@ -174,17 +174,17 @@ def init_adapter_config(config: Dict[str, any],
         elif args.evaluate:
             if ';' in config_class.task_name:
                 for task_name in config_class.task_name.split(';'):
-                    config_list.append(mlora.EvaluateConfig(
+                    config_list.append(gmoe.EvaluateConfig(
                         adapter_name=config_class.adapter_name,
                         task_name=task_name,
                         batch_size=lora_config["test_batch_size"]))
             else:
-                config_list.append(mlora.EvaluateConfig(
+                config_list.append(gmoe.EvaluateConfig(
                     adapter_name=config_class.adapter_name,
                     task_name=config_class.task_name,
                     batch_size=lora_config["test_batch_size"]))
         else:
-            config_list.append(mlora.TrainConfig(lora_config, config_class)) #在trainer.py里
+            config_list.append(gmoe.TrainConfig(lora_config, config_class)) #在trainer.py里
     return config_list
 
 
@@ -194,9 +194,9 @@ def inference_callback(cur_pos, outputs):
         print(f"{adapter_name} OUTPUT: {output[0]}")
 
 
-def inference(llm_model: mlora.LLMModel,
-              tokenizer: mlora.Tokenizer,
-              adapters: List[mlora.GenerateConfig]):
+def inference(llm_model: gmoe.LLMModel,
+              tokenizer: gmoe.Tokenizer,
+              adapters: List[gmoe.GenerateConfig]):
     while True:
         input_raw = input("INPUT WITHOUT PROMPT: ")
         if input_raw == "QUIT":
@@ -204,7 +204,7 @@ def inference(llm_model: mlora.LLMModel,
         for config in adapters:
             config.prompts = [input_raw]
         callback = None if args.disable_log else inference_callback
-        outputs = mlora.generate(llm_model, tokenizer, adapters,
+        outputs = gmoe.generate(llm_model, tokenizer, adapters,
                                  stream_callback=callback)
         print(f"\n{'='*10}\n")
         print(f"PROMPT: {input_raw}")
@@ -225,24 +225,24 @@ if __name__ == "__main__":
     is_train = not args.inference and not args.evaluate
 
     if args.attn_impl is None:
-        if mlora.common._flash_attn_available:
+        if gmoe.common._flash_attn_available:
             args.attn_impl = "flash_attn"
         else:
             args.attn_impl = "eager"
 
-    mlora.setup_logging("INFO", args.log_file)
+    gmoe.setup_logging("INFO", args.log_file)
 
-    mlora_backend = mlora.get_backend()
+    gmoe_backend = gmoe.get_backend()
 
-    if not mlora_backend.check_available():
+    if not gmoe_backend.check_available():
         exit(-1)
 
     if args.device is None:
-        args.device = f"{mlora_backend.device_name()}:0"
+        args.device = f"{gmoe_backend.device_name()}:0"
 
-    mlora_backend.use_deterministic_algorithms(args.deterministic)
-    mlora_backend.allow_tf32(args.tf32)
-    mlora_backend.manual_seed(args.seed)
+    gmoe_backend.use_deterministic_algorithms(args.deterministic)
+    gmoe_backend.allow_tf32(args.tf32)
+    gmoe_backend.manual_seed(args.seed)
 
     with open(args.config, 'r', encoding='utf8') as fp:
         config = json.load(fp)
@@ -250,12 +250,12 @@ if __name__ == "__main__":
     tokenizer, model = load_base_model()
     adapters = init_adapter_config(config, model)
 
-    mlora_backend.empty_cache()
+    gmoe_backend.empty_cache()
 
     if args.inference:
         inference(model, tokenizer, adapters)
     elif args.evaluate:
-        mlora.evaluate(model=model, tokenizer=tokenizer, configs=adapters,
+        gmoe.evaluate(model=model, tokenizer=tokenizer, configs=adapters,
                        max_concurrent_jobs=config.get(
                            "eval_lora_simultaneously_num", None),
                        retrying_steps=config.get(
@@ -265,11 +265,11 @@ if __name__ == "__main__":
     else:
         valconfigs = []
         for lora in config["lora"]:
-            valconfigs.append(mlora.ValidationConfig(
+            valconfigs.append(gmoe.ValidationConfig(
                     adapter_name=lora["name"],
                     task_name=lora["task_name"],
                     batch_size = lora["test_batch_size"]))
-        mlora.train(mlora.Dispatcher(config, tokenizer), model,
+        gmoe.train(gmoe.Dispatcher(config, tokenizer), model,
                     adapters,
                     valconfigs,
                     args.dir, config["save_step"])
