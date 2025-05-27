@@ -1,4 +1,4 @@
-from mlora.common import (
+from gmoe.common import (
     _flash_attn_available,
     prepare_4d_causal_attention_mask,
     scaled_dot_product_attention,
@@ -17,9 +17,9 @@ from mlora.common import (
     LLMDecoder,
     LLMForCausalLM,
 )
-from mlora.common.mix_lora import _mixtral_slice_tensor
-from mlora.backends import _backend, get_backend
-from mlora.utils import copy_parameters
+from gmoe.common.mix_lora import _mixtral_slice_tensor
+from gmoe.backends import _backend, get_backend
+from gmoe.utils import copy_parameters
 
 from typing import Tuple, Dict, List, Optional
 from transformers.activations import ACT2FN

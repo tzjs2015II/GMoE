@@ -1,7 +1,7 @@
-from mlora.common import Tokens, LoraBatchDataConfig, MultiLoraBatchData
-from mlora.tokenizer import Tokenizer
-from mlora.prompter import Prompter
-from mlora.model import LLMModel
+from gmoe.common import Tokens, LoraBatchDataConfig, MultiLoraBatchData
+from gmoe.tokenizer import Tokenizer
+from gmoe.prompter import Prompter
+from gmoe.model import LLMModel
 
 from dataclasses import dataclass
 from typing import List, Tuple, Union

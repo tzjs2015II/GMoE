@@ -1,4 +1,4 @@
-from mlora.utils import is_package_available
+from gmoe.utils import is_package_available
 from typing import Tuple, List, Optional
 from .modelargs import Masks
 

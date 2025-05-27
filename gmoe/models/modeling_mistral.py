@@ -1,4 +1,4 @@
-from mlora.models.modeling_llama import (
+from gmoe.models.modeling_llama import (
     LlamaConfig,
     LlamaAttention,
     LlamaMLP,
@@ -7,7 +7,7 @@ from mlora.models.modeling_llama import (
     LlamaEmbedding,
     LlamaForCausalLM,
 )
-from mlora.common import (
+from gmoe.common import (
     _flash_attn_available,
     apply_rotary_emb,
     get_unpad_data,
@@ -15,8 +15,8 @@ from mlora.common import (
     FeedForward,
     MultiLoraBatchData,
 )
-from mlora.backends import _backend, get_backend
-from mlora.utils import copy_parameters
+from gmoe.backends import _backend, get_backend
+from gmoe.utils import copy_parameters
 
 from dataclasses import dataclass
 from typing import Optional

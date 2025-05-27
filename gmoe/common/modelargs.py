@@ -1,6 +1,6 @@
 from typing import Any, List, Dict, Callable
 from transformers.activations import ACT2FN
-from mlora.backends import get_backend
+from gmoe.backends import get_backend
 
 from dataclasses import dataclass
 

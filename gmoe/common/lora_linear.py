@@ -1,6 +1,6 @@
 from .modelargs import MultiLoraBatchData
 from .modelargs import LoraConfig
-from mlora.utils import is_package_available
+from gmoe.utils import is_package_available
 
 import math
 import torch
@@ -11,7 +11,7 @@ if is_package_available("bitsandbytes"):
     from bitsandbytes.nn import Linear8bitLt, Linear4bit
     import bitsandbytes as bnb
 else:
-    from mlora.utils import Linear8bitLt, Linear4bit
+    from gmoe.utils import Linear8bitLt, Linear4bit
 
 from typing import Dict, Tuple, List
 

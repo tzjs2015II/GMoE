@@ -1,16 +1,16 @@
-from mlora.common import (
+from gmoe.common import (
     CHECKPOINT_CLASSES,
     FeedForward,
 )
-from mlora.models.modeling_llama import (
+from gmoe.models.modeling_llama import (
     LlamaConfig,
     LLAMA_ATTENTION_CLASSES as GEMMA_ATTENTION_CLASSES,
     LlamaMLP,
     LlamaDecoderLayer,
     LlamaForCausalLM,
 )
-from mlora.backends import get_backend
-from mlora.utils import copy_parameters
+from gmoe.backends import get_backend
+from gmoe.utils import copy_parameters
 
 from collections import OrderedDict
 from typing import Tuple

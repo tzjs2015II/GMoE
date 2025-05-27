@@ -1,6 +1,6 @@
 from .common import BasicMetric, AutoMetric, CommonSenseTask
-from mlora.tokenizer import Tokenizer
-from mlora.common import DataClass
+from gmoe.tokenizer import Tokenizer
+from gmoe.common import DataClass
 from typing import List, Optional
 
 import datasets as hf_datasets

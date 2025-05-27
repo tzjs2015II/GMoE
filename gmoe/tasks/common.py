@@ -1,6 +1,6 @@
-from mlora.tokenizer import Tokenizer
-from mlora.prompter import Prompter
-from mlora.common import DataClass
+from gmoe.tokenizer import Tokenizer
+from gmoe.prompter import Prompter
+from gmoe.common import DataClass
 
 from typing import Any, Dict, List, Tuple, Optional, Callable
 import datasets as hf_datasets

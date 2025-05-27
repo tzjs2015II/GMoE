@@ -1,4 +1,4 @@
-from mlora.common import (
+from gmoe.common import (
     LLMOutput,
     LLMDecoder,
     LLMForCausalLM,
@@ -10,10 +10,10 @@ from mlora.common import (
     router_loss_factory,
     lora_config_factory,
 )
-from mlora.tasks import SequenceClassificationTask, task_dict
-from mlora.utils import is_package_available
-from mlora.models import from_pretrained
-from mlora.backends import get_backend
+from gmoe.tasks import SequenceClassificationTask, task_dict
+from gmoe.utils import is_package_available
+from gmoe.models import from_pretrained
+from gmoe.backends import get_backend
 
 from huggingface_hub import snapshot_download
 from transformers import AutoModelForCausalLM
@@ -28,7 +28,7 @@ import os
 if is_package_available("bitsandbytes"):
     from transformers import BitsAndBytesConfig
 else:
-    from mlora.utils import BitsAndBytesConfig
+    from gmoe.utils import BitsAndBytesConfig
 
 
 class CasualOutputLayer(LLMOutput):
