@@ -581,9 +581,11 @@ class GraphSparseMoe(torch.nn.Module):
             self.experts_: int = config.num_experts_
         self.topk_: int = config.top_k_
         self.act_ = ACT2FN[args.hidden_act_ if config.act_fn_ is None else config.act_fn_]
+        # 门控模块
         self.gate_ = GoEgate(args.dim_, self.experts_, config.num_gcnlayer, \
                                 config.edges_thresholds, config.dim_gcn, self.act_, \
                                 device=config.device)
+        
         self.lamb = torch.tensor(1.5, dtype=self.dtype_, requires_grad = True, device=config.device)
         self.theta = torch.tensor([self.experts_ / 2], dtype=self.dtype_, requires_grad = True, device=config.device)
         self.count = torch.zeros(self.experts_, dtype=self.dtype_, device=config.device)

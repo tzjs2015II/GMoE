@@ -140,7 +140,7 @@ def init_lora_layer_weight(
     for name, module in layer.state_dict().items():
         linear_layer_list.append(module)
         linear_layer_name_list.append(name)
-
+    # MoE初始化
     if isinstance(config, MixConfig):
         if config.sparse_step_ is None or layer.layer_id_ % config.sparse_step_ == 1:
             # Inject LoRA configs into FFN layer
@@ -394,7 +394,7 @@ class LLMModel(torch.nn.Module):
         logging.info(f"Use {attn_impl} as attention implementation.")
 
         return LLMModel(model)
-
+    
     def get_lora_weight_dict(self, lora_name: str) -> Dict[str, torch.Tensor]:
         # return the lora weight and target_module's name
         lora_weight_dict = self.output_.layers_[lora_name].state_dict()
@@ -432,6 +432,7 @@ class LLMModel(torch.nn.Module):
                                 + f"experts.{expert_idx}."
                                 + f"{lora_layer_name_list[idx]}.lora_B.weight"
                             ] = lora_layer.loras_[moe_lora_name].lora_b_.weight
+                    # 路由逻辑
                     if transformer_layer.mlp_.moes_[lora_name].moe == "goe":
                         lora_weight_dict[
                             moe_layer_prefix_name + "gate.lamb" 
